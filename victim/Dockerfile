@@ -5,7 +5,12 @@ FROM openjdk:8u181-jdk-alpine
 EXPOSE 25565
 
 ADD server.jar server.jar
-RUN echo "eula=true" > eula.txt
+RUN echo "eula=true" > eula.txt && \
+    echo "online-mode=false" >> server.properties
 
-# Run the Minecraft server
-CMD java -Xmx1024M -Xms1024M -jar server.jar nogui
+ENV FLAG="flag{log4sh311}"
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["java", "-Xmx1024M", "-Xms1024M", "-jar", "server.jar", "nogui"]

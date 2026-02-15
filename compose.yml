@@ -1,0 +1,32 @@
+services:
+  # two services share one network, so that the attacker and the victim can communicate with each other with hostnames
+  minecraft:
+    # build from victim/Dockerfile, image name to agenthle/sec-minecraft
+    build:
+      context: ./victim
+      dockerfile: Dockerfile
+    image: agenthle/sec-minecraft
+    networks:
+      - labnet
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "25565"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  client:
+    # build from attacker/Dockerfile, image name to agenthle/sec-attacker
+    build:
+      context: ./attacker
+      dockerfile: Dockerfile
+    image: agenthle/sec-attacker
+    networks:
+      - labnet
+    depends_on:
+      - minecraft
+    ports:
+      - "${HOST_CUA_PORT:-5000}:5000"
+
+networks:
+  labnet:
+    driver: bridge
