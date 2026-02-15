@@ -11,6 +11,8 @@ RUN uv tool install cua-computer-server
 
 WORKDIR /work
 
+RUN apt -y install x11vnc x11-utils fluxbox
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

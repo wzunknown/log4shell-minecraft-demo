@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -eu -o pipefail
 
 DISPLAY="${DISPLAY:-:99}"
 SCREEN="${XVFB_SCREEN:-1920x1080x24}"
@@ -19,6 +19,10 @@ while [ $i -lt 50 ]; do
   i=$((i+1))
   sleep 0.5
 done
+
+# Start WM
+fluxbox >/var/log/wm.log 2>&1 &
+WM_PID=$!
 
 # VNC auth (optional but strongly recommended)
 VNC_AUTH_ARGS="-nopw"
@@ -42,6 +46,7 @@ VNC_PID=$!
 
 cleanup() {
   kill "$VNC_PID" 2>/dev/null || true
+  kill "$WM_PID" 2>/dev/null || true
   kill "$XVFB_PID" 2>/dev/null || true
 }
 trap cleanup EXIT INT TERM
