@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Add Docker's official GPG key:
-$SUDO=$([ "$EUID" -eq 0 ] && echo "" || echo "$SUDO ")
+SUDO=$([ "$EUID" -eq 0 ] && echo "" || echo "sudo")
 
 $SUDO apt update
 $SUDO apt install ca-certificates curl -y
